@@ -96,94 +96,94 @@ echo "Dry run:                 '$dry_run'"
 
 echo "--- Downloading kubectl"
 if ! curl -fsSLO "https://storage.googleapis.com/kubernetes-release/release/v$kubectl_version/bin/linux/amd64/kubectl"; then
-    echo "Could not download kubectl"
-    exit 1
+  echo "Could not download kubectl"
+  exit 1
 fi
 chmod +x ./kubectl
 ./kubectl version --client
 
 echo "+++ Preparing list of resource kinds to target"
 target_kinds=(
-    ingress
-    service
-    deployment
-    statefulset
-    job
-    cronjob
-    persistentvolumeclaim
-    configmap
-    secret
+  ingress
+  service
+  deployment
+  statefulset
+  job
+  cronjob
+  persistentvolumeclaim
+  configmap
+  secret
 )
 
 if [[ -n $crds ]]; then
-    IFS="," read -ra parsed_crds <<<"$crds"
-    for kind in "${parsed_crds[@]}"; do
-        target_kinds+=("$kind")
-    done
+  IFS="," read -ra parsed_crds <<<"$crds"
+  for kind in "${parsed_crds[@]}"; do
+    target_kinds+=("$kind")
+  done
 fi
 
 # when targeting by label, we can additionally prune pods regardless of their random naming
 if [[ "$selector" =~ ^label_key= ]]; then
-    target_kinds+=("pod")
+  target_kinds+=("pod")
 fi
 
 for kind in "${target_kinds[@]}"; do
-    echo "$kind"
+  echo "$kind"
 done
 
 echo "--- Fetching branches (note: first 100 only)"
 branches=$(curl -fsSLu "$github_token" "https://api.github.com/repos/${repo_slug}/branches?per_page=100" | jq -r ".[].name" | sed "s/.*\///")
 
 if [[ -z "$branches" ]]; then
-    echo "Could not obtain branch names from GitHub (access/credentials error?)"
-    echo "No ingresses, services or deployments will be deleted"
-    exit 1
+  echo "Could not obtain branch names from GitHub (access/credentials error?)"
+  echo "No ingresses, services or deployments will be deleted"
+  exit 1
 fi
 
 echo "+++ Preparing list of values to persist"
 persist=$branches
 if [[ -n $extra_persist_values ]]; then
-    IFS="," read -ra persist_values <<<"$extra_persist_values"
-    for val in "${persist_values[@]}"; do
-        persist=$persist$'\n'$val
-    done
+  IFS="," read -ra persist_values <<<"$extra_persist_values"
+  for val in "${persist_values[@]}"; do
+    persist=$persist$'\n'$val
+  done
 fi
 echo "$persist"
 
 export KUBECONFIG=$KUBECONFIG_PATH
 
 for kind in "${target_kinds[@]}"; do
-    echo "+++ Pruning $kind..."
+  echo "+++ Pruning $kind..."
 
-    if [[ "$selector" == "name" ]]; then
+  if [[ "$selector" == "name" ]]; then
 
-        # special handling for secrets: will only deal with Opaque secrets, leaving other types intact
-        if [[ "$kind" == "secret" ]]; then
-            all=$(./kubectl get "$kind" -n "$K8S_NAMESPACE" --field-selector=type=Opaque -o jsonpath="{.items[*].metadata.name}" | tr " " "\n" | sort)
-        else
-            all=$(./kubectl get "$kind" -n "$K8S_NAMESPACE" -o jsonpath="{.items[*].metadata.name}" | tr " " "\n" | sort)
-        fi
-
-        comm -13 <(echo "$persist" | sort) <(echo "$all") | while read -r name; do
-            [[ -z $name ]] && continue
-            [[ "$dry_run" == "1" ]] && echo "Would delete matching name: $name" && continue
-            ./kubectl delete "$kind" "$name" -n "$K8S_NAMESPACE" || true
-        done
-
-    elif [[ "$selector" =~ ^label_key= ]]; then
-
-        all=$(./kubectl get "$kind" -n "$K8S_NAMESPACE" -o jsonpath="{.items[*].metadata.labels.${selector#label_key=}}" | tr " " "\n" | sort -u)
-        comm -13 <(echo "$persist" | sort) <(echo "$all") | while read -r value; do
-            [[ -z $value ]] && continue
-            [[ "$dry_run" == "1" ]] && echo "Would delete matching label: ${selector#label_key=}=$value" && continue
-            ./kubectl delete "$kind" -n "$K8S_NAMESPACE" -l "${selector#label_key=}=$value" || true
-        done
-
+    # special handling for secrets: will only deal with Opaque secrets, leaving other types intact
+    if [[ "$kind" == "secret" ]]; then
+      all=$(./kubectl get "$kind" -n "$K8S_NAMESPACE" --field-selector=type=Opaque -o jsonpath="{.items[*].metadata.name}" | tr " " "\n" | sort)
     else
-
-        echo "Invalid selector: $selector"
-        exit 1
-
+      all=$(./kubectl get "$kind" -n "$K8S_NAMESPACE" -o jsonpath="{.items[*].metadata.name}" | tr " " "\n" | sort)
     fi
+
+    comm -13 <(echo "$persist" | sort) <(echo "$all") | while read -r name; do
+      [[ -z $name ]] && continue
+      [[ "$dry_run" == "1" ]] && echo "Would delete matching name: $name" && continue
+      ./kubectl delete "$kind" "$name" -n "$K8S_NAMESPACE" || true
+    done
+
+  elif [[ "$selector" =~ ^label_key= ]]; then
+
+    all=$(./kubectl get "$kind" -n "$K8S_NAMESPACE" -o jsonpath="{.items[*].metadata.labels.${selector#label_key=}}" | tr " " "\n" | sort -u)
+    comm -13 <(echo "$persist" | sort) <(echo "$all") | while read -r value; do
+      [[ -z $value ]] && continue
+      [[ "$dry_run" == "1" ]] && echo "Would delete matching label: ${selector#label_key=}=$value" && continue
+      ./kubectl delete "$kind" -n "$K8S_NAMESPACE" -l "${selector#label_key=}=$value" || true
+    done
+
+  else
+
+    echo "Invalid selector: $selector"
+    exit 1
+
+  fi
 
 done

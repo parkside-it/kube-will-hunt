@@ -31,5 +31,3 @@ jobs:
         with:
           push: true
           tags: parkside/k8s-branch-cleaner-aws:latest
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
