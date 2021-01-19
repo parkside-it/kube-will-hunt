@@ -1,0 +1,35 @@
+name: ci
+
+on:
+  push:
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Build docker image for AWS
+        id: docker_build
+        if: github.ref != 'refs/heads/main'
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: parkside/k8s-branch-cleaner-aws:latest
+      - name: Login to DockerHub
+        if: github.ref == 'refs/heads/main'
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push docker image for AWS
+        id: docker_build_push
+        if: github.ref == 'refs/heads/main'
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: parkside/k8s-branch-cleaner-aws:latest
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
