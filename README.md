@@ -1,5 +1,5 @@
 # kube-branch-cleaner
-=========
+
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/parkside-it/kube-branch-cleaner/build)
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/parkside-it/kube-branch-cleaner?sort=semver)
 ![Docker Pulls](https://img.shields.io/docker/pulls/parkside/kube-branch-cleaner)
