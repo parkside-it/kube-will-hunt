@@ -1,4 +1,4 @@
-![Build status](https://github.com/parkside-it/kube-branch-cleaner/workflows/build/badge.svg)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/parkside-it/kube-branch-cleaner/build)
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/parkside-it/kube-branch-cleaner?sort=semver)
 
 # kube-branch-cleaner
