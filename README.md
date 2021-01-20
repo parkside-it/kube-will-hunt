@@ -22,6 +22,10 @@ resources belonging to that branch.
 * Option to use different selectors to find kubernetes resources to clean
 
 ## Configuration
+### Volumes
+The branch cleaner needs a valid kubeconfig file mounted as a volume.
+The path where the file is mounted should be passed into the container through `$KUBECONFIG_PATH`.
+
 ### Common environment variables
 | Variable | Required | Default | Example | Description |
 |---|---|---|---|---|
