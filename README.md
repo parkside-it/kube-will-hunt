@@ -25,7 +25,7 @@ resources belonging to that branch.
 ### Common environment variables
 | Variable | Required | Default | Example | Description |
 |---|---|---|---|---|
-| `REPO_URL` | yes |  | parkside/example-repo | Full SSH repo URL to fetch the current branches from |
+| `REPO_URL` | yes |  | git@github.com:parkside-it/example-repo.git | Full SSH repo URL to fetch the current branches from |
 | `KUBECONFIG_PATH` | yes |   | `/opt/kubeconfig` | Kubeconfig that is used to access the k8s cluster for cleanup |
 | `KUBECTL_VERSION` | no | `1.16.11` | `1.18.15` | This version of kubectl will be downloaded and used |
 | `K8S_NAMESPACE` | yes |  | `some-namespace` | This k8s namespace will be cleaned up |
@@ -38,9 +38,9 @@ resources belonging to that branch.
 ### Flavor specific environment variables
 #### AWS
 
-| Variable | Required | Default  | Description |
-|---|---|---|---|
-| `AWS_CONTAINER_CREDENTIALS_RELATIVE_URI` | yes | no default | Used for authentication to AWS |
+| Variable | Required | Default | Example | Description |
+|---|---|---|---|---|
+| `AWS_CONTAINER_CREDENTIALS_RELATIVE_URI` | yes |  | `$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI` | Used for authentication to AWS |
 
 ### Bare-metal clusters
 
@@ -53,7 +53,7 @@ docker run \
   -e "KUBECONFIG_PATH=path/to/the/mounted/kubeconfig" \
   -e "GITHUB_TOKEN=your-github-token" \
   -e "KUBECTL_VERSION=1.18.15" \
-  -e "AWS_CONTAINER_CREDENTIALS_RELATIVE_URI=$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI" \
+  -e "AWS_CONTAINER_CREDENTIALS_RELATIVE_URI" \
   -v "$KUBECONFIG:$KUBECONFIG_PATH" \
   parkside/kube-branch-cleaner:latest-bare-metal
 ```
