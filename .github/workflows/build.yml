@@ -20,11 +20,11 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: false
-          target: k8s-prune-aws
+          target: kube-branch-cleaner-aws
 
       - name: Build docker image for bare-metal
         id: docker_build_bare_metal
         uses: docker/build-push-action@v2
         with:
           push: false
-          target: k8s-prune-bare-metal
+          target: kube-branch-cleaner-metal

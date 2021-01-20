@@ -1,7 +1,7 @@
 ##############################################################
 # App: Branch clean up for AWS clusters
 ##############################################################
-FROM amazon/aws-cli:2.1.19 AS k8s-prune-aws
+FROM amazon/aws-cli:2.1.19 AS kube-branch-cleaner-aws
 
 RUN yum install -y jq curl bash \
   && yum clean all
@@ -14,7 +14,7 @@ ENTRYPOINT []
 ##############################################################
 # App: Branch clean up for base-metal clusters
 ##############################################################
-FROM alpine:3.12.0 AS k8s-prune-bare-metal
+FROM alpine:3.12.0 AS kube-branch-cleaner-bare-metal
 
 ARG USER=cleaner
 ENV HOME /home/$USER

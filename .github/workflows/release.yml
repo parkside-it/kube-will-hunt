@@ -28,14 +28,14 @@ jobs:
         id: docker_build_push
         uses: docker/build-push-action@v2
         with:
-          target: k8s-prune-aws
+          target: kube-branch-cleaner-aws
           push: true
-          tags: parkside/k8s-branch-cleaner:$RELEASE_VERSION-bare-metal
+          tags: parkside/kube-branch-cleaner:$RELEASE_VERSION-aws
 
       - name: Build and push docker image for bare-metal
         id: docker_build_push_bare_metal
         uses: docker/build-push-action@v2
         with:
-          target: k8s-prune-bare-metal
+          target: kube-branch-cleaner-bare-metal
           push: true
-          tags: parkside/k8s-branch-cleaner:$RELEASE_VERSION-aws
+          tags: parkside/kube-branch-cleaner:$RELEASE_VERSION-bare-metal
