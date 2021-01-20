@@ -84,13 +84,21 @@ kubectl_version=${KUBECTL_VERSION:-"1.18.15"}
 extra_persist_values=${EXTRA_PERSIST_VALUES:-""}
 crds=${CRDS:-""}
 github_token=${GITHUB_TOKEN?Error: GITHUB_TOKEN is not defined}
+kubeconfig_path=${KUBECONFIG_PATH?Error: KUEBCONFIG_PATH is not defined}
 dry_run=${DRY_RUN:-"0"}
+
+if [ ! -f "$kubeconfig_path" ]; then
+  echo "Error: Kubeconfig at the specified KUBECONFIG_PATH does not exist!"
+  echo "Please check if the volume for it is mounted correctly."
+  exit 1
+fi
+
 echo "Repo slug:               '$repo_slug'"
 echo "Selector mode:           '$selector'"
 echo "Extra values to persist: '$extra_persist_values'"
 echo "CRDs:                    '$crds'"
 echo "kubectl version:         '$kubectl_version'"
-echo "Kubeconfig Path:         '$KUBECONFIG_PATH'"
+echo "Kubeconfig Path:         '$kubeconfig_path'"
 echo "Kubernetes namespace:    '$K8S_NAMESPACE'"
 echo "Dry run:                 '$dry_run'"
 
@@ -150,7 +158,7 @@ if [[ -n $extra_persist_values ]]; then
 fi
 echo "$persist"
 
-export KUBECONFIG=$KUBECONFIG_PATH
+export KUBECONFIG=$kubeconfig_path
 
 for kind in "${target_kinds[@]}"; do
   echo "+++ Pruning $kind..."
