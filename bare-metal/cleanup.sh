@@ -20,7 +20,7 @@
 #     Required: yes
 #
 #   - KUBECONFIG_PATH
-#     The full path of the k8s config file which should be mounted there as a volume
+#     The absolute path of the k8s config file which should be mounted there as a volume
 #     Example: "/opt/kubeconfig"
 #     Required: yes
 #
@@ -28,7 +28,7 @@
 #     The kubectl version to use (should be close to cluster version, ideally match it).
 #     Example: "1.18.15"
 #     Required: no
-#     Default: "1.18.15"
+#     Default: "1.16.11"
 #
 #   - K8S_NAMESPACE
 #     The Kubernetes namespace to search for resources.
@@ -38,14 +38,6 @@
 #   - GITHUB_TOKEN
 #     The GitHub access token that should be used to access the source repository.
 #     Example: "a github access token"
-#     Required: yes
-#
-#   - AWS_CONTAINER_CREDENTIALS_RELATIVE_URI
-#     This is a variable set by AWS ECS (and also AWS CodeBuild). It stores the path to the credentials for the
-#     current IAM role that is used. This is needed so that the cleanup script can access the AWS EKS cluster
-#     with the correct credentials.
-#     This variable can be passed in as is (docker run -e $AWS_CONTAINER_CREDENTIALS_RELATIVE_URI=$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI)
-#     Link for more info: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-iam-roles.html
 #     Required: yes
 #
 #   - SELECTOR
@@ -80,11 +72,12 @@ echo "+++ Parsing inputs"
 repo_slug=${REPO_URL#*":"}
 repo_slug=${repo_slug%".git"}
 selector=${SELECTOR:-"label_key=branch"}
-kubectl_version=${KUBECTL_VERSION:-"1.18.15"}
+kubectl_version=${KUBECTL_VERSION:-"1.16.11"}
 extra_persist_values=${EXTRA_PERSIST_VALUES:-""}
 crds=${CRDS:-""}
 github_token=${GITHUB_TOKEN?Error: GITHUB_TOKEN is not defined}
 kubeconfig_path=${KUBECONFIG_PATH?Error: KUEBCONFIG_PATH is not defined}
+k8s_namespace=${K8S_NAMESPACE?Error: Kubernetes namespace is not defined}
 dry_run=${DRY_RUN:-"0"}
 
 if [ ! -f "$kubeconfig_path" ]; then
@@ -99,7 +92,7 @@ echo "Extra values to persist: '$extra_persist_values'"
 echo "CRDs:                    '$crds'"
 echo "kubectl version:         '$kubectl_version'"
 echo "Kubeconfig path:         '$kubeconfig_path'"
-echo "Kubernetes namespace:    '$K8S_NAMESPACE'"
+echo "Kubernetes namespace:    '$k8s_namespace'"
 echo "Dry run:                 '$dry_run'"
 
 echo "--- Downloading kubectl"
@@ -167,24 +160,24 @@ for kind in "${target_kinds[@]}"; do
 
     # special handling for secrets: will only deal with Opaque secrets, leaving other types intact
     if [[ "$kind" == "secret" ]]; then
-      all=$(./kubectl get "$kind" -n "$K8S_NAMESPACE" --field-selector=type=Opaque -o jsonpath="{.items[*].metadata.name}" | tr " " "\n" | sort)
+      all=$(./kubectl get "$kind" -n "$k8s_namespace" --field-selector=type=Opaque -o jsonpath="{.items[*].metadata.name}" | tr " " "\n" | sort)
     else
-      all=$(./kubectl get "$kind" -n "$K8S_NAMESPACE" -o jsonpath="{.items[*].metadata.name}" | tr " " "\n" | sort)
+      all=$(./kubectl get "$kind" -n "$k8s_namespace" -o jsonpath="{.items[*].metadata.name}" | tr " " "\n" | sort)
     fi
 
     comm -13 <(echo "$persist" | sort) <(echo "$all") | while read -r name; do
       [[ -z $name ]] && continue
       [[ "$dry_run" == "1" ]] && echo "Would delete matching name: $name" && continue
-      ./kubectl delete "$kind" "$name" -n "$K8S_NAMESPACE" || true
+      ./kubectl delete "$kind" "$name" -n "$k8s_namespace" || true
     done
 
   elif [[ "$selector" =~ ^label_key= ]]; then
 
-    all=$(./kubectl get "$kind" -n "$K8S_NAMESPACE" -o jsonpath="{.items[*].metadata.labels.${selector#label_key=}}" | tr " " "\n" | sort -u)
+    all=$(./kubectl get "$kind" -n "$k8s_namespace" -o jsonpath="{.items[*].metadata.labels.${selector#label_key=}}" | tr " " "\n" | sort -u)
     comm -13 <(echo "$persist" | sort) <(echo "$all") | while read -r value; do
       [[ -z $value ]] && continue
       [[ "$dry_run" == "1" ]] && echo "Would delete matching label: ${selector#label_key=}=$value" && continue
-      ./kubectl delete "$kind" -n "$K8S_NAMESPACE" -l "${selector#label_key=}=$value" || true
+      ./kubectl delete "$kind" -n "$k8s_namespace" -l "${selector#label_key=}=$value" || true
     done
 
   else
