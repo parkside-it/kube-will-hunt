@@ -79,3 +79,6 @@ docker run \
   -v "$KUBECONFIG:$KUBECONFIG_PATH" \
   parkside/kube-branch-cleaner:latest-aws
 ```
+
+## License
+MIT License
