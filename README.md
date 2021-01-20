@@ -32,7 +32,7 @@ resources belonging to that branch.
 | `GITHUB_TOKEN` | yes |  | `your-token` | This token is used to access private GitHub repos |
 | `SELECTOR` | no | `label_key=branch` | `label_key=app` | This k8s selector will be used to find old resources that need cleanup |
 | `EXTRA_PERSIST_VALUES` | no | `""`  | `staging,feature-to-keep` | Comma separated list of names that should not be cleaned up |
-| `CRDS` | no | `""` | `SealedSecret,SomeCustomResource` | Custom k8s resource definitions that should also be taken into account during cleanup |
+| `CRDS` | no | `""` | `SealedSecret` | Comma separated list of custom k8s resource definitions that should also be taken into account during cleanup |
 | `DRY_RUN` | no | `0` | `1` or `0` | If this is set to `1`, then the cleanup will only check what to clean but not delete anything |
 
 ### Flavor specific environment variables
