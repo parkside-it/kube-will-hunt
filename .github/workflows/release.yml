@@ -30,7 +30,9 @@ jobs:
         with:
           target: kube-branch-cleaner-aws
           push: true
-          tags: parkside/kube-branch-cleaner:$RELEASE_VERSION-aws
+          tags: |
+            parkside/kube-branch-cleaner:$RELEASE_VERSION-aws
+            parkside/kube-branch-cleaner:latest-aws
 
       - name: Build and push docker image for bare-metal
         id: docker_build_push_bare_metal
@@ -38,4 +40,6 @@ jobs:
         with:
           target: kube-branch-cleaner-bare-metal
           push: true
-          tags: parkside/kube-branch-cleaner:$RELEASE_VERSION-bare-metal
+          tags: |
+            parkside/kube-branch-cleaner:$RELEASE_VERSION-bare-metal
+            parkside/kube-branch-cleaner:latest-bare-metal
