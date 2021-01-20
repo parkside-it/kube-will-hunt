@@ -49,6 +49,8 @@ The path where the file is mounted should be passed into the container through `
 |---|---|---|---|---|
 | `AWS_CONTAINER_CREDENTIALS_RELATIVE_URI` | yes |  | `$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI` | Used for authentication to AWS |
 
+You can find additional documentation inside the cleanup scripts for [AWS](/bare-metal/cleanup.sh) and [bare-metal](/aws/cleanup.sh).
+
 ## Example Usages
 ### Bare-metal clusters
 
