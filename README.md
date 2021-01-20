@@ -1,9 +1,10 @@
+# kube-branch-cleaner
+=========
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/parkside-it/kube-branch-cleaner/build)
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/parkside-it/kube-branch-cleaner?sort=semver)
 ![Docker Pulls](https://img.shields.io/docker/pulls/parkside/kube-branch-cleaner)
 ![GitHub](https://img.shields.io/github/license/parkside-it/kube-branch-cleaner)
 
-# kube-branch-cleaner
 Small cleanup scripts packaged into a docker images to clean up old feature branches in Kubernetes clusters.
 
 This repo includes a version for bare-metal and AWS EKS clusters.
@@ -56,11 +57,11 @@ docker run \
   -e "REPO_URL=github-user/github-repo" \
   -e "K8S_NAMESPACE=some-namespace" \
   -e "SELECTOR=label_key=branch" \
-  -e "KUBECONFIG_PATH=path/to/the/mounted/kubeconfig" \
+  -e "KUBECONFIG_PATH=/path/to/the/mounted/kubeconfig" \
   -e "GITHUB_TOKEN=your-github-token" \
   -e "KUBECTL_VERSION=1.18.15" \
   -e "AWS_CONTAINER_CREDENTIALS_RELATIVE_URI" \
-  -v "$KUBECONFIG:$KUBECONFIG_PATH" \
+  -v "/hostpath/to/kubeconfig:/path/to/the/mounted/kubeconfig" \
   parkside/kube-branch-cleaner:latest-bare-metal
 ```
 
@@ -74,11 +75,11 @@ docker run \
   -e "REPO_URL=github-user/github-repo" \
   -e "K8S_NAMESPACE=some-namespace" \
   -e "SELECTOR=label_key=branch" \
-  -e "KUBECONFIG_PATH=path/to/the/mounted/kubeconfig" \
+  -e "KUBECONFIG_PATH=/path/to/the/mounted/kubeconfig" \
   -e "GITHUB_TOKEN=your-github-token" \
   -e "KUBECTL_VERSION=1.18.15" \
-  -e "AWS_CONTAINER_CREDENTIALS_RELATIVE_URI=$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI" \
-  -v "$KUBECONFIG:$KUBECONFIG_PATH" \
+  -e "AWS_CONTAINER_CREDENTIALS_RELATIVE_URI" \
+  -v "/hostpath/to/kubeconfig:/path/to/the/mounted/kubeconfig" \
   parkside/kube-branch-cleaner:latest-aws
 ```
 
