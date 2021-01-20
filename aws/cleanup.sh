@@ -28,7 +28,7 @@
 #     The kubectl version to use (should be close to cluster version, ideally match it).
 #     Example: "1.18.15"
 #     Required: no
-#     Default: "1.18.15"
+#     Default: "1.16.11"
 #
 #   - K8S_NAMESPACE
 #     The Kubernetes namespace to search for resources.
@@ -80,7 +80,7 @@ echo "+++ Parsing inputs"
 repo_slug=${REPO_URL#*":"}
 repo_slug=${repo_slug%".git"}
 selector=${SELECTOR:-"label_key=branch"}
-kubectl_version=${KUBECTL_VERSION:-"1.18.15"}
+kubectl_version=${KUBECTL_VERSION:-"1.16.11"}
 extra_persist_values=${EXTRA_PERSIST_VALUES:-""}
 crds=${CRDS:-""}
 github_token=${GITHUB_TOKEN?Error: GITHUB_TOKEN is not defined}
