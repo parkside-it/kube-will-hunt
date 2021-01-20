@@ -1,5 +1,7 @@
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/parkside-it/kube-branch-cleaner/build)
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/parkside-it/kube-branch-cleaner?sort=semver)
+![Docker Pulls](https://img.shields.io/docker/pulls/parkside/kube-branch-cleaner)
+![GitHub](https://img.shields.io/github/license/parkside-it/kube-branch-cleaner)
 
 # kube-branch-cleaner
 Small cleanup scripts packaged into a docker images to clean up old feature branches in Kubernetes clusters.
