@@ -2,6 +2,8 @@ name: ci
 
 on:
   push:
+    tags:
+      - "*"
 
 jobs:
   main:
@@ -9,25 +11,31 @@ jobs:
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
-      - name: Build docker image for AWS
-        id: docker_build
-        if: github.ref != 'refs/heads/main'
-        uses: docker/build-push-action@v2
-        with:
-          push: false
-          tags: parkside/k8s-branch-cleaner-aws:latest
+
+      - name: Set release version
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
       - name: Login to DockerHub
-        if: github.ref == 'refs/heads/main'
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: Build and push docker image for AWS
         id: docker_build_push
-        if: github.ref == 'refs/heads/main'
         uses: docker/build-push-action@v2
         with:
+          target: k8s-prune-aws
           push: true
-          tags: parkside/k8s-branch-cleaner-aws:latest
+          tags: parkside/k8s-branch-cleaner:$RELEASE_VERSION-bare-metal
+
+      - name: Build and push docker image for bare-metal
+        id: docker_build_push_bare_metal
+        uses: docker/build-push-action@v2
+        with:
+          target: k8s-prune-bare-metal
+          push: true
+          tags: parkside/k8s-branch-cleaner:$RELEASE_VERSION-aws
