@@ -49,6 +49,7 @@ The path where the file is mounted should be passed into the container through `
 |---|---|---|---|---|
 | `AWS_CONTAINER_CREDENTIALS_RELATIVE_URI` | yes |  | `$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI` | Used for authentication to AWS |
 
+## Example Usages
 ### Bare-metal clusters
 
 ```shell
