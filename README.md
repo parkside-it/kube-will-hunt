@@ -1,19 +1,26 @@
-# kube-branch-cleaner
+# kube-will-hunt
 
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/parkside-it/kube-branch-cleaner/build)
-![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/parkside-it/kube-branch-cleaner?sort=semver)
-![Docker Pulls](https://img.shields.io/docker/pulls/parkside/kube-branch-cleaner)
-![GitHub](https://img.shields.io/github/license/parkside-it/kube-branch-cleaner)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/parkside-it/kube-will-hunt/build)
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/parkside-it/kube-will-hunt?sort=semver)
+![Docker Pulls](https://img.shields.io/docker/pulls/parkside/kube-will-hunt)
+![GitHub](https://img.shields.io/github/license/parkside-it/kube-will-hunt)
 
 Small cleanup scripts packaged into docker images to clean up old feature branches in Kubernetes clusters.
 
 This repo includes a version for bare-metal and AWS EKS clusters.
-Releases are pushed to [DockerHub](https://hub.docker.com/r/parkside/kube-branch-cleaner).
+Releases are pushed to [DockerHub](https://hub.docker.com/r/parkside/kube-will-hunt).
+
+### What is that name?
+`kube-will-hunt` is a reference to the movie Good Will Hunting.
+In the movie, the protagonist Will Hunting is introduced as a janitor.
+The janitor reference seemed fitting for this tool.
+
+Also, it will hunt down your unused resources!
 
 ## How it works
-The branch cleaner takes care of your old feature branch CI deployments.
+This tool takes care of your old feature branch CI deployments.
 
-If a branch was merged into master/main, the cleaner docker image should be run.
+If a branch was merged into master/main, the `kube-will-hunt` docker image should be run.
 It will fetch the current branches from GitHub and will compare against the branch deployments in your cluster.
 If it finds deployments where the corresponding branch on GitHub is already deleted, it will delete the kubernetes
 resources belonging to that branch.
@@ -26,7 +33,7 @@ resources belonging to that branch.
 
 ## Configuration
 ### Volumes
-The branch cleaner needs a valid kubeconfig file mounted as a volume.
+`kube-will-hunt` needs a valid kubeconfig file mounted as a volume.
 The path where the file is mounted should be passed into the container through `$KUBECONFIG_PATH`.
 
 ### Common environment variables
@@ -55,7 +62,7 @@ You can find additional documentation inside the cleanup scripts for [AWS](/aws/
 ### Bare-metal clusters
 
 ```shell
-docker pull parkside/kube-branch-cleaner:latest-bare-metal
+docker pull parkside/kube-will-hunt:latest-bare-metal
 docker run \
   -e "REPO_URL=github-user/github-repo" \
   -e "K8S_NAMESPACE=some-namespace" \
@@ -65,15 +72,15 @@ docker run \
   -e "KUBECTL_VERSION=1.18.15" \
   -e "AWS_CONTAINER_CREDENTIALS_RELATIVE_URI" \
   -v "/hostpath/to/kubeconfig:/path/to/the/mounted/kubeconfig" \
-  parkside/kube-branch-cleaner:latest-bare-metal
+  parkside/kube-will-hunt:latest-bare-metal
 ```
 
 ### AWS EKS clusters
-The cleanup image for AWS clusters is intended for use in AWS CodeBuild pipelines.
+The `kube-will-hunt` image for AWS clusters is intended for use in AWS CodeBuild pipelines.
 It makes use of the `$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI` environment variable 
 which points to valid AWS credentials that are used to access the AWS EKS cluster.
 ```shell
-docker pull parkside/kube-branch-cleaner:latest-aws
+docker pull parkside/kube-will-hunt:latest-aws
 docker run \
   -e "REPO_URL=github-user/github-repo" \
   -e "K8S_NAMESPACE=some-namespace" \
@@ -83,7 +90,7 @@ docker run \
   -e "KUBECTL_VERSION=1.18.15" \
   -e "AWS_CONTAINER_CREDENTIALS_RELATIVE_URI" \
   -v "/hostpath/to/kubeconfig:/path/to/the/mounted/kubeconfig" \
-  parkside/kube-branch-cleaner:latest-aws
+  parkside/kube-will-hunt:latest-aws
 ```
 
 ## License

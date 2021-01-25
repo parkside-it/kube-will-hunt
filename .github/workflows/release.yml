@@ -28,18 +28,18 @@ jobs:
         id: docker_build_push
         uses: docker/build-push-action@v2
         with:
-          target: kube-branch-cleaner-aws
+          target: kube-will-hunt-aws
           push: true
           tags: |
-            parkside/kube-branch-cleaner:${{ env.RELEASE_VERSION }}-aws
-            parkside/kube-branch-cleaner:latest-aws
+            parkside/kube-will-hunt:${{ env.RELEASE_VERSION }}-aws
+            parkside/kube-will-hunt:latest-aws
 
       - name: Build and push docker image for bare-metal
         id: docker_build_push_bare_metal
         uses: docker/build-push-action@v2
         with:
-          target: kube-branch-cleaner-bare-metal
+          target: kube-will-hunt-bare-metal
           push: true
           tags: |
-            parkside/kube-branch-cleaner:${{ env.RELEASE_VERSION }}-bare-metal
-            parkside/kube-branch-cleaner:latest-bare-metal
+            parkside/kube-will-hunt:${{ env.RELEASE_VERSION }}-bare-metal
+            parkside/kube-will-hunt:latest-bare-metal

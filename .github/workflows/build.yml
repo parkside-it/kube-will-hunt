@@ -20,11 +20,11 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: false
-          target: kube-branch-cleaner-aws
+          target: kube-will-hunt-aws
 
       - name: Build docker image for bare-metal
         id: docker_build_bare_metal
         uses: docker/build-push-action@v2
         with:
           push: false
-          target: kube-branch-cleaner-bare-metal
+          target: kube-will-hunt-bare-metal
