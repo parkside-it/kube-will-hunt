@@ -12,7 +12,7 @@ CMD ["/opt/cleanup.sh"]
 ENTRYPOINT []
 
 ##############################################################
-# App: Branch clean up for base-metal clusters
+# App: Branch clean up for bare-metal clusters
 ##############################################################
 FROM alpine:3.12.0 AS kube-branch-cleaner-bare-metal
 
@@ -25,5 +25,5 @@ RUN apk add --no-cache bash curl jq
 USER $USER
 WORKDIR $HOME
 
-COPY bare-metal/cleanup.sh ./
+COPY bare-metal/cleanup.sh /opt/cleanup.sh
 CMD ["/home/alpine/cleanup.sh"]

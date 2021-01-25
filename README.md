@@ -5,7 +5,7 @@
 ![Docker Pulls](https://img.shields.io/docker/pulls/parkside/kube-branch-cleaner)
 ![GitHub](https://img.shields.io/github/license/parkside-it/kube-branch-cleaner)
 
-Small cleanup scripts packaged into a docker images to clean up old feature branches in Kubernetes clusters.
+Small cleanup scripts packaged into docker images to clean up old feature branches in Kubernetes clusters.
 
 This repo includes a version for bare-metal and AWS EKS clusters.
 Releases are pushed to [DockerHub](https://hub.docker.com/r/parkside/kube-branch-cleaner).
@@ -14,7 +14,7 @@ Releases are pushed to [DockerHub](https://hub.docker.com/r/parkside/kube-branch
 The branch cleaner takes care of your old feature branch CI deployments.
 
 If a branch was merged into master/main, the cleaner docker image should be run.
-It will fetch the current branches from GitHub and compares them against the branch deployments in your cluster.
+It will fetch the current branches from GitHub and will compare against the branch deployments in your cluster.
 If it finds deployments where the corresponding branch on GitHub is already deleted, it will delete the kubernetes
 resources belonging to that branch.
 
