@@ -11,11 +11,12 @@ This repo includes a version for bare-metal and AWS EKS clusters.
 Releases are pushed to [DockerHub](https://hub.docker.com/r/parkside/kube-will-hunt).
 
 ### What is that name?
-`kube-will-hunt` is a reference to the movie Good Will Hunting.
-In the movie, the protagonist Will Hunting is introduced as a janitor.
-The janitor reference seemed fitting for this tool.
 
-Also, it will hunt down your unused resources!
+We named this tool after the protagonist of the movie Good Will Hunting.
+Will starts his journey as an unrecognised genius who works as a janitor at MIT.
+
+Alternatively, you can think about it as a tool which will hunt down your unused resources!
+
 
 ## How it works
 This tool takes care of your old feature branch CI deployments.
