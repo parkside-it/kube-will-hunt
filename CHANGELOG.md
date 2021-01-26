@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-## [0.1.0] - 01/02/2020
+## [0.1.0] - 26/01/2020
 
 ### Added
 * Cleanup script for AWS
